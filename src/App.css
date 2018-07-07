@@ -9,7 +9,7 @@
 
 .App-header {
   background-color: #FFFFFF;
-  height: 150px;
+  height: auto;
   padding: 20px;
 }
 
@@ -21,11 +21,44 @@
   font-size: large;
 }
 
-.Result{
-  margin-top: 2em;
-}
-
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
+}
+
+.siimple-btn.siimple-btn--teslared {
+  background-color: #E82127;
+  color: #ffffff;
+}
+
+.Result{
+  padding-top:20px;
+}
+
+.siimple-spinner.siimple-spinner--teslared, .siimple-spinner.siimple-spinner--teslared:after, .siimple-spinner.siimple-spinner--teslared:before {
+  background-color: #E82127;
+}
+
+.siimple-input.siimple-input--large{
+  height: 60px;
+  line-height: 60px;
+  font-size: 25px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  border: 0px;
+  border-radius: 5px;
+  outline: 0px;
+}
+
+
+.siimple-form-field-label{
+  text-align: left;
+}
+
+.siimple-content--extra-extra-small {
+  max-width: 300px;
+  padding-left: calc(50% - 300px / 2);
+  padding-right: calc(50% - 300px / 2);
 }

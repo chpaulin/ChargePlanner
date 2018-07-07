@@ -1,3 +1,4 @@
+import { LowestCostPeriodForLoadResult } from './LowestCostPeriodForLoadResult';
 import { MyState } from './MyState';
 
 import * as React from 'react';
@@ -20,10 +21,13 @@ class App extends React.Component {
       <div className="App">
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to Tesla Charge Planner</h1>
-          <div>
-            <label>Battery type: </label>
-            <select name="batteryType" value={this.state.batteryType} onChange={this.handleInputChange}>
+        </header>
+        <div className="siimple-form">
+          <div className="siimple-form-title">Welcome to Tesla Charge Planner</div>
+          <div className="siimple-content siimple-content--extra-extra-small">
+            {/* <div className="siimple-form-field">
+            <div className="siimple-form-field-label">Battery type</div>
+            <select name="batteryType" className="siimple-input siimple-select--fluid" value={this.state.batteryType} onChange={this.handleInputChange}>
               <option value="BT37">BT37</option>
               <option value="BT85">BT85</option>
               <option value="BT70">BT70 </option>
@@ -32,31 +36,48 @@ class App extends React.Component {
               <option value="BTX6">BTX6</option>
               <option value="BTX8">BTX8</option>
             </select>
+          </div> */}
+            <div className="siimple-form-field">
+              <div className="siimple-form-field-label">State of charge (%)</div>
+              <input type="text" className="siimple-input siimple-input--fluid" name="charge" onChange={this.handleInputChange} placeholder="50" />
+            </div>
+            <div className="siimple-form-field">
+              <div className="siimple-form-field-label">Charge to (%)</div>
+              <input type="text" className="siimple-input siimple-input--fluid" name="chargeGoal" onChange={this.handleInputChange} placeholder="90" />
+            </div>
+            <div className="siimple-form-field">
+              <div className="siimple-form-field-label">Charging power (kW)</div>
+              <input type="text" className="siimple-input siimple-input--fluid" name="power" onChange={this.handleInputChange} placeholder="11" />
+            </div>
+            <button onClick={this.calculate} className="siimple-btn siimple-btn--teslared">Calculate</button>
+
+            <div className="Result" >
+              <div hidden={!this.state.isCalculating}>
+                <div className="siimple-spinner siimple-spinner--teslared siimple-spinner--large" />
+              </div>
+              <div hidden={this.state.result === undefined}>
+                <div className="siimple-card Result">
+                  <div className="siimple-card-header">Cheepest time to charge</div>
+                  <div className="siimple-card-body">Charging time: {this.state.result !== undefined ? this.getTimeString(this.state.result.start) : 0} - {this.state.result !== undefined ? this.getTimeString(this.state.result.stop) : 0}</div>
+                  <div className="siimple-card-body">Average cost per kWh: {this.state.result !== undefined ? Math.round(this.state.result.averagePricePerUnit * 100) : 0} öre</div>
+                  <div className="siimple-card-body">Energy: {this.state.result !== undefined ? Math.round(this.state.result.energyUnits * 100) / 100 : 0}kWh</div>
+                  <div className="siimple-card-body">Cost: {this.state.result !== undefined ? this.state.result.cost : 0} kr</div>
+                </div>
+              </div>
+            </div>
+
           </div>
-          <div>
-            <label>State of charge (%): </label>
-            <input type="text" name="charge" value={this.state.charge} onChange={this.handleInputChange} />
-          </div>
-          <div>
-            <label>Minimum charge state: </label>
-            <input type="text" name="minimumCharge" onChange={this.handleInputChange} />
-          </div>
-          <div>
-            <label>Power: </label>
-            <input type="text" name="power" value={this.state.power} onChange={this.handleInputChange} />
-          </div>
-          <button onClick={this.calculate}>
-            Calculate
-          </button>
-          <div className="Result" hidden={this.state.result === undefined}>
-            <h3>Result</h3>
-            <div>Cost: {this.state.result !== undefined ? this.state.result.cost : 0}kr</div>
-            <div>Energy: {this.state.result !== undefined ? Math.round(this.state.result.energyUnits * 100) / 100 : 0}kWh</div>
-            <div>Charging time: {this.state.result !== undefined ? this.state.result.start : 0} - {this.state.result !== undefined ? this.state.result.start : 0}</div>
-          </div>
-        </header>
+
+        </div>
       </div>
     );
+  }
+
+  private getTimeString = (time: string): string => {
+
+    const date = new Date(time);
+
+    return date.toLocaleTimeString("sv-SE", {timeZone: "Europe/Stockholm"} as Intl.DateTimeFormatOptions)
   }
 
   private handleInputChange = (event: any) => {
@@ -71,10 +92,13 @@ class App extends React.Component {
 
   private calculate = async () => {
 
-    const power = 7;
+    this.state.isCalculating = true;
+
+    this.forceUpdate();
+
     const energy = 0.72 * (90 - this.state.charge);
 
-    const url = `http://spotpriceapi.azurewebsites.net/operations/GetLowestCostPeriodForLoad?area=SE3&energy=${energy}&power=${power}`;
+    const url = `http://spotpriceapi.azurewebsites.net/operations/GetLowestCostPeriodForLoad?area=SE3&energy=${energy}&power=${this.state.power}`;
 
     const response = await fetch(url,
       {
@@ -84,20 +108,12 @@ class App extends React.Component {
         method: "GET"
       } as RequestInit);
 
-    this.state.result = await response.json() as ILowestCostPeriodForLoadResult;
+    this.state.result = await response.json() as LowestCostPeriodForLoadResult;
+
+    this.state.isCalculating = false;
 
     this.forceUpdate();
   }
-}
-
-export interface ILowestCostPeriodForLoadResult {
-  cost: number;
-  energyUnits: number;
-  averagePricePerUnit: number;
-  unitType: string;
-  currency: string;
-  start: Date;
-  stop: Date;
 }
 
 export default App;
