@@ -96,7 +96,7 @@ class App extends React.Component {
 
     this.forceUpdate();
 
-    const energy = 0.72 * (90 - this.state.charge);
+    const energy = 0.72 * (this.state.chargeGoal - this.state.charge);
 
     const url = `http://spotpriceapi.azurewebsites.net/operations/GetLowestCostPeriodForLoad?area=SE3&energy=${energy}&power=${this.state.power}`;
 
