@@ -62,3 +62,22 @@
   padding-left: calc(50% - 300px / 2);
   padding-right: calc(50% - 300px / 2);
 }
+
+.content{
+  padding:2em;
+  text-align: center;
+}
+
+.inner{
+  text-align: left;
+  width: 300px;
+}
+
+.center {
+  margin: auto;
+}
+
+.hidden{
+  visibility: collapse;
+}
+

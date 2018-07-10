@@ -5,11 +5,12 @@ import * as React from "react";
 import {
   Button,
   Loader,
-  Grid,
-  Container,
   Form,
   Header,
-  Dimmer
+  Dimmer,
+  Label,
+  Segment,
+  List
 } from "semantic-ui-react";
 import "./App.css";
 
@@ -26,20 +27,19 @@ class App extends React.Component {
 
   public render() {
     return (
-      <Container fluid>
+      <div className="content">
         <Dimmer active={this.state.isCalculating}>
           <Loader size="massive" />
         </Dimmer>
-        <Grid centered padded columns={3}>
-          <Grid.Row>
-            <Grid.Column />
-            <Grid.Column textAlign="center">
-              <img src={logo} className="App-logo" alt="logo" />
+        <div className="header">
+          <img src={logo} className="App-logo" alt="logo" />
 
-              <Header as="h3">Welcome to Tesla Charge Planner</Header>
-              <br />
-              <br />
-              {/* <div className="siimple-form-field">
+          <Header as="h2">Welcome to Tesla Charge Planner</Header>
+          <br />
+          <br />
+        </div>
+        <div className="inner center">
+          {/* <div className="siimple-form-field">
             <div className="siimple-form-field-label">Battery type</div>
             <select name="batteryType" className="siimple-input siimple-select--fluid" value={this.state.batteryType} onChange={this.handleInputChange}>
               <option value="BT37">BT37</option>
@@ -51,85 +51,86 @@ class App extends React.Component {
               <option value="BTX8">BTX8</option>
             </select>
           </div> */}
-              <Container textAlign="left">
-                <Form size="huge">
-                  <Form.Field
-                    label="Charge state"
-                    placeholder="Charge state"
-                    name="charge"
-                    control="input"
-                    onChange={this.handleInputChange}
-                  />
-                  <Form.Field
-                    label="Charge to"
-                    placeholder="Charge to"
-                    name="chargeGoal"
-                    control="input"
-                    onChange={this.handleInputChange}
-                  />
-                  <Form.Field
-                    label="Charging power"
-                    placeholder="Charging power"
-                    name="power"
-                    control="input"
-                    onChange={this.handleInputChange}
-                  />
-                  <Button
-                    size="huge"
-                    onClick={this.calculate}
-                    active={this.canCalculate()}
-                  >
-                    Calculate
+          <Form size="huge" autoComplete="off">
+            <Form.Input
+              label="Charge state"
+              placeholder="Charge state"
+              name="charge"
+              control="input"
+              type="number"
+              onChange={this.handleInputChange}
+            />
+            <Form.Field
+              label="Charge to"
+              placeholder="Charge to"
+              name="chargeGoal"
+              control="input"
+              type="number"
+              onChange={this.handleInputChange}
+            />
+            <Form.Field
+              label="Charging power"
+              placeholder="Charging power"
+              name="power"
+              control="input"
+              type="number"
+              onChange={this.handleInputChange}
+            />
+            <Button
+              size="huge"
+              onClick={this.calculate}
+              active={this.canCalculate()}
+            >
+              Calculate
                   </Button>
-                </Form>
-                <div className="Result">
-                  <div hidden={this.state.result === undefined}>
-                    <div className="siimple-card Result">
-                      <div className="siimple-card-header">
-                        Cheepest time to charge
-                      </div>
-                      <div className="siimple-card-body">
-                        Charging time:{" "}
-                        {this.state.result !== undefined
-                          ? this.getTimeString(this.state.result.start)
-                          : 0}{" "}
-                        -{" "}
-                        {this.state.result !== undefined
-                          ? this.getTimeString(this.state.result.stop)
-                          : 0}
-                      </div>
-                      <div className="siimple-card-body">
-                        Average cost per kWh:{" "}
-                        {this.state.result !== undefined
-                          ? Math.round(
-                              this.state.result.averagePricePerUnit * 100
-                            )
-                          : 0}{" "}
-                        öre
-                      </div>
-                      <div className="siimple-card-body">
-                        Energy:{" "}
-                        {this.state.result !== undefined
-                          ? Math.round(this.state.result.energyUnits * 100) /
-                            100
-                          : 0}kWh
-                      </div>
-                      <div className="siimple-card-body">
-                        Cost:{" "}
-                        {this.state.result !== undefined
-                          ? this.state.result.cost
-                          : 0}{" "}
-                        kr
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </Container>
-            </Grid.Column>
-            <Grid.Column />
-          </Grid.Row>
-        </Grid>
-      </Container>
+          </Form>
+          <Segment className={this.state.result === undefined ? "hidden" : ""}>
+            <Label as='a' color='red' ribbon size="huge">
+              Cheapest time to charge
+            </Label>
+            <List size="huge" divided>
+
+              {/* <Table.Header>
+                <List.Item>
+                  <Table.HeaderCell colSpan='2'>Cheapest time to charge</Table.HeaderCell>
+                </List.Item>
+              </Table.Header> */}
+
+              <List.Item>
+                <List.Header>Charging time</List.Header>
+                <List.Item>{this.state.result !== undefined
+                  ? this.getTimeString(this.state.result.start)
+                  : 0}{" "}
+                  -{" "}
+                  {this.state.result !== undefined
+                    ? this.getTimeString(this.state.result.stop)
+                    : 0}</List.Item>
+              </List.Item>
+              <List.Item>
+                <List.Header>Average price</List.Header>
+                <List.Item>{this.state.result !== undefined
+                  ? Math.round(
+                    this.state.result.averagePricePerUnit * 100
+                  )
+                  : 0} öre/kWh</List.Item>
+              </List.Item>
+              <List.Item>
+                <List.Header>Energy</List.Header>
+                <List.Item> {this.state.result !== undefined
+                  ? Math.round(this.state.result.energyUnits * 100) /
+                  100
+                  : 0} kWh</List.Item>
+              </List.Item>
+              <List.Item>
+                <List.Header>Charging cost</List.Header>
+                <List.Item>{this.state.result !== undefined
+                  ? this.state.result.cost
+                  : 0} kr</List.Item>
+              </List.Item>
+            </List>
+          </Segment>
+        </div>
+      </div>
     );
   }
 
@@ -164,7 +165,7 @@ class App extends React.Component {
 
     const url = `http://spotpriceapi.azurewebsites.net/operations/GetLowestCostPeriodForLoad?area=SE3&energy=${energy}&power=${
       this.state.power
-    }`;
+      }`;
 
     const response = await fetch(url, {
       headers: {
