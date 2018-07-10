@@ -81,3 +81,6 @@
   visibility: collapse;
 }
 
+.ui.form .field>label{
+  margin-bottom: 0.4em;
+}

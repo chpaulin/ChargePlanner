@@ -80,9 +80,8 @@ class App extends React.Component {
               size="huge"
               onClick={this.calculate}
               active={this.canCalculate()}
-            >
-              Calculate
-                  </Button>
+              className={this.canCalculate() ? "red" : ""}
+            >Calculate</Button>
           </Form>
           <Segment className={this.state.result === undefined ? "hidden" : ""}>
             <Label as='a' color='red' ribbon size="huge">
