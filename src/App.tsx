@@ -89,13 +89,6 @@ class App extends React.Component {
               Cheapest time to charge
             </Label>
             <List size="huge" divided>
-
-              {/* <Table.Header>
-                <List.Item>
-                  <Table.HeaderCell colSpan='2'>Cheapest time to charge</Table.HeaderCell>
-                </List.Item>
-              </Table.Header> */}
-
               <List.Item>
                 <List.Header>Charging time</List.Header>
                 <List.Item>{this.state.result !== undefined
@@ -157,9 +150,9 @@ class App extends React.Component {
   };
 
   private calculate = async () => {
-    this.state.isCalculating = true;
-
-    this.forceUpdate();
+    this.setState({
+      isCalculating: true
+    });
 
     const energy = 0.72 * (this.state.chargeGoal - this.state.charge);
 
@@ -174,11 +167,10 @@ class App extends React.Component {
       method: "GET"
     } as RequestInit);
 
-    this.state.result = (await response.json()) as LowestCostPeriodForLoadResult;
-
-    this.state.isCalculating = false;
-
-    this.forceUpdate();
+    this.setState({
+      result: (await response.json()) as LowestCostPeriodForLoadResult,
+      isCalculating: false
+    });
   };
 }
 
