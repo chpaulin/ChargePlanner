@@ -42,7 +42,8 @@
 
 .inner{
   position: absolute;
-  width: 300px;
+  width: 300px; 
+  padding-bottom: 2em; 
 }
 
 .center {
@@ -59,4 +60,8 @@
 .ui.dropdown .menu>.item {
   font-size: 1em;
 }
+.ui.dimmer{
+  position: fixed;
+}
+
 

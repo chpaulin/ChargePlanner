@@ -163,7 +163,7 @@ class App extends React.Component {
                 fluid
               >New calculation...</Button>
           </div>
-        </div>
+        </div>        
       </div>
     );
   }
