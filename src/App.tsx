@@ -186,9 +186,11 @@ class App extends React.Component {
 
     const duration = dateStop - dateStart;
 
-    const durationDate = new Date(duration);
+    let minutes =  Math.ceil(duration / 60000);
+    const hours =  Math.floor(minutes / 60);
+    minutes -= hours * 60; 
 
-    return `${durationDate.getHours()}h ${durationDate.getMinutes()}m`;
+    return `${hours}h ${minutes}m`;
   };
 
   private handleDropdownChange = (event: any, data: any) => {
