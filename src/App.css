@@ -64,4 +64,9 @@
   position: fixed;
 }
 
+.ui.form input[type=number]{
+  padding-right: 0;
+  margin-right: -1em;
+}
+
 

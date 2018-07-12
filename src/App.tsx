@@ -12,6 +12,7 @@ import {
   Segment,
   List,
   Dropdown,
+  Input
   // Grid
 } from "semantic-ui-react";
 import "./App.css";
@@ -77,7 +78,6 @@ class App extends React.Component {
   }
 
   public render() {
-
     return (
       <div className="content">
         <Dimmer active={this.state.isCalculating}>
@@ -91,100 +91,143 @@ class App extends React.Component {
           <br />
         </div>
         <div className="outer center">
-          <div className={`inner ${this.state.result !== undefined ? "hidden" : ""}`}>
-
+          <div
+            className={`inner ${
+              this.state.result !== undefined ? "hidden" : ""
+            }`}
+          >
             <Form size="huge" autoComplete="off">
               <Form.Field>
                 <label>Location</label>
-                <Dropdown name="location" placeholder='Select location' fluid selection options={this.locations} onChange={this.handleDropdownChange} />
+                <Dropdown
+                  name="location"
+                  placeholder="Select location"
+                  fluid
+                  selection
+                  options={this.locations}
+                  onChange={this.handleDropdownChange}
+                />
               </Form.Field>
               <Form.Field>
                 <label>Battery</label>
-                <Dropdown name="batteryCapacity" placeholder='Select battery size' fluid selection options={this.batteryTypes} onChange={this.handleDropdownChange} />
+                <Dropdown
+                  name="batteryCapacity"
+                  placeholder="Select battery size"
+                  fluid
+                  selection
+                  options={this.batteryTypes}
+                  onChange={this.handleDropdownChange}
+                />
               </Form.Field>
 
-              <Form.Field
-                label="Charge state"
-                placeholder="Enter charge state"
-                name="charge"
-                control="input"
-                type="number"
-                onChange={this.handleInputChange}
-              />
-              <Form.Field
-                label="Charge to"
-                placeholder="Enter charging goal"
-                name="chargeGoal"
-                control="input"
-                type="number"
-                onChange={this.handleInputChange}
-              />
-              <Form.Field
-                label="Charging power"
-                placeholder="Enter charging power"
-                name="power"
-                control="input"
-                type="number"
-                onChange={this.handleInputChange}
-              />
+              <Form.Field>
+                <label>State of charge</label>
+                <Input
+                  label={{ basic: true, content: "%" }}
+                  labelPosition="right"
+                  placeholder="Eg. 52" name="charge"
+                  type="number" onChange={
+                    this.handleInputChange
+                  }
+                />
+              </Form.Field>
+              <Form.Field>
+                <label>Charge to</label>
+                <Input
+                  label={{ basic: true, content: "%" }}
+                  labelPosition="right"
+                  placeholder="Eg. 90" name="chargeGoal"
+                  type="number" onChange={
+                    this.handleInputChange
+                  }
+                />
+              </Form.Field>
+              <Form.Field>
+                <label>Charging power</label>
+                <Input
+                  label={{ basic: true, content: "kW" }}
+                  labelPosition="right"
+                  placeholder="Eg. 11" name="power"
+                  type="number" onChange={
+                    this.handleInputChange
+                  }
+                />
+              </Form.Field>
               <Button
                 size="huge"
                 onClick={this.calculate}
                 active={this.canCalculate()}
                 className={this.canCalculate() ? "red" : ""}
                 fluid
-              >Calculate</Button>
+              >
+                Calculate
+              </Button>
             </Form>
           </div>
-          <div className={`inner ${this.state.result === undefined ? "hidden" : ""}`}>
-            <Segment className={this.state.result === undefined ? "hidden" : ""}>
-              <Label as='a' color='red' ribbon size="huge">
+          <div
+            className={`inner ${
+              this.state.result === undefined ? "hidden" : ""
+            }`}
+          >
+            <Segment
+              className={this.state.result === undefined ? "hidden" : ""}
+            >
+              <Label as="a" color="red" ribbon size="huge">
                 Cheapest time to charge
-            </Label>
+              </Label>
               <List size="huge" divided>
                 <List.Item>
                   <List.Header>Start charging</List.Header>
-                  <List.Item>{this.state.result !== undefined
-                    ? this.getTimeString(this.state.result.start)
-                    : ""}
+                  <List.Item>
+                    {this.state.result !== undefined
+                      ? this.getTimeString(this.state.result.start)
+                      : ""}
                   </List.Item>
                 </List.Item>
                 <List.Item>
                   <List.Header>Duration</List.Header>
-                  <List.Item>{this.state.result !== undefined
-                    ? this.getDurationString(this.state.result.start, this.state.result.stop)
-                    : ""}
+                  <List.Item>
+                    {this.state.result !== undefined
+                      ? this.getDurationString(
+                          this.state.result.start,
+                          this.state.result.stop
+                        )
+                      : ""}
                   </List.Item>
                 </List.Item>
                 <List.Item>
                   <List.Header>Average price</List.Header>
-                  <List.Item>{this.state.result !== undefined
-                    ? Math.round(
-                      this.state.result.averagePricePerUnit * 100
-                    )
-                    : 0} öre/kWh</List.Item>
+                  <List.Item>
+                    {this.state.result !== undefined
+                      ? Math.round(this.state.result.averagePricePerUnit * 100)
+                      : 0}{" "}
+                    öre/kWh
+                  </List.Item>
                 </List.Item>
                 <List.Item>
                   <List.Header>Energy</List.Header>
-                  <List.Item> {this.state.result !== undefined
-                    ? Math.round(this.state.result.energyUnits * 100) /
-                    100
-                    : 0} kWh</List.Item>
+                  <List.Item>
+                    {" "}
+                    {this.state.result !== undefined
+                      ? Math.round(this.state.result.energyUnits * 100) / 100
+                      : 0}{" "}
+                    kWh
+                  </List.Item>
                 </List.Item>
                 <List.Item>
                   <List.Header>Charging cost</List.Header>
-                  <List.Item>{this.state.result !== undefined
-                    ? this.state.result.cost
-                    : 0} kr</List.Item>
+                  <List.Item>
+                    {this.state.result !== undefined
+                      ? this.state.result.cost
+                      : 0}{" "}
+                    kr
+                  </List.Item>
                 </List.Item>
               </List>
             </Segment>
-            <Button
-              size="huge"
-              onClick={this.reset}
-              className="red"
-              fluid
-            >New calculation...</Button>
+            <Button size="huge" onClick={this.reset} className="red" fluid>
+              New calculation...
+            </Button>
           </div>
         </div>
       </div>
@@ -192,15 +235,19 @@ class App extends React.Component {
   }
 
   private canCalculate = (): boolean => {
-    return this.state.charge > 0 && this.state.chargeGoal > 0 && this.state.power > 0;
+    return (
+      this.state.charge > 0 && this.state.chargeGoal > 0 && this.state.power > 0
+    );
   };
 
   private getTimeString = (time: string): string => {
     const date = new Date(time);
 
-    return date.toLocaleTimeString("sv-SE", {
-      timeZone: "Europe/Stockholm"
-    } as Intl.DateTimeFormatOptions).substr(0, 5);
+    return date
+      .toLocaleTimeString("sv-SE", {
+        timeZone: "Europe/Stockholm"
+      } as Intl.DateTimeFormatOptions)
+      .substr(0, 5);
   };
 
   private getDurationString = (start: string, stop: string): string => {
@@ -225,7 +272,6 @@ class App extends React.Component {
     });
   };
 
-
   private handleInputChange = (event: any) => {
     const target = event.target;
     let value = target.type === "checkbox" ? target.checked : target.value;
@@ -247,11 +293,13 @@ class App extends React.Component {
       isCalculating: true
     });
 
-    const energy = (this.state.batteryCapacity / 100) * (this.state.chargeGoal - this.state.charge);
+    const energy =
+      (this.state.batteryCapacity / 100) *
+      (this.state.chargeGoal - this.state.charge);
 
-    const url = `http://spotpriceapi.azurewebsites.net/operations/GetLowestCostPeriodForLoad?area=${this.state.location}&energy=${energy}&power=${
-      this.state.power
-      }`;
+    const url = `http://spotpriceapi.azurewebsites.net/operations/GetLowestCostPeriodForLoad?area=${
+      this.state.location
+    }&energy=${energy}&power=${this.state.power}`;
 
     const response = await fetch(url, {
       headers: {
