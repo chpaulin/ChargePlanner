@@ -17,6 +17,7 @@ import {
 import "./App.css";
 
 import logo from "./logo.svg";
+import { Area } from "./Area";
 
 class App extends React.Component {
   public state: MyState;
@@ -50,6 +51,24 @@ class App extends React.Component {
       value: 95.7
     }
   );
+  private locations: Area[] = new Array<Area>(
+    {
+      text: "Luleå",
+      value: "SE1"
+    },
+    {
+      text: "Sundsvall",
+      value: "SE2"
+    },
+    {
+      text: "Stockholm",
+      value: "SE3"
+    },
+    {
+      text: "Malmö",
+      value: "SE4"
+    }
+  );
 
   constructor(props: any) {
     super(props);
@@ -75,6 +94,10 @@ class App extends React.Component {
           <div className={`inner ${this.state.result !== undefined ? "hidden" : ""}`}>
 
             <Form size="huge" autoComplete="off">
+              <Form.Field>
+                <label>Location</label>
+                <Dropdown name="location" placeholder='Select location' fluid selection options={this.locations} onChange={this.handleDropdownChange} />
+              </Form.Field>
               <Form.Field>
                 <label>Battery</label>
                 <Dropdown name="batteryCapacity" placeholder='Select battery size' fluid selection options={this.batteryTypes} onChange={this.handleDropdownChange} />
@@ -157,13 +180,13 @@ class App extends React.Component {
               </List>
             </Segment>
             <Button
-                size="huge"
-                onClick={this.reset}
-                className="red"
-                fluid
-              >New calculation...</Button>
+              size="huge"
+              onClick={this.reset}
+              className="red"
+              fluid
+            >New calculation...</Button>
           </div>
-        </div>        
+        </div>
       </div>
     );
   }
@@ -186,9 +209,9 @@ class App extends React.Component {
 
     const duration = dateStop - dateStart;
 
-    let minutes =  Math.ceil(duration / 60000);
-    const hours =  Math.floor(minutes / 60);
-    minutes -= hours * 60; 
+    let minutes = Math.ceil(duration / 60000);
+    const hours = Math.floor(minutes / 60);
+    minutes -= hours * 60;
 
     return `${hours}h ${minutes}m`;
   };
@@ -226,7 +249,7 @@ class App extends React.Component {
 
     const energy = (this.state.batteryCapacity / 100) * (this.state.chargeGoal - this.state.charge);
 
-    const url = `http://spotpriceapi.azurewebsites.net/operations/GetLowestCostPeriodForLoad?area=SE3&energy=${energy}&power=${
+    const url = `http://spotpriceapi.azurewebsites.net/operations/GetLowestCostPeriodForLoad?area=${this.state.location}&energy=${energy}&power=${
       this.state.power
       }`;
 

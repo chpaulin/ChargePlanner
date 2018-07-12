@@ -1,6 +1,7 @@
 import { LowestCostPeriodForLoadResult } from "./LowestCostPeriodForLoadResult";
 
 export class MyState {
+  public location: string = "";
   public batteryCapacity: number = 0;
   public charge: number = 0;
   public chargeGoal: number = 90;
