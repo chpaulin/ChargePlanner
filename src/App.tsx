@@ -19,6 +19,7 @@ import "./App.css";
 
 import logo from "./logo.svg";
 import { Area } from "./Area";
+import * as Cookies from "js-cookie";
 
 class App extends React.Component {
   public state: MyState;
@@ -74,7 +75,13 @@ class App extends React.Component {
   constructor(props: any) {
     super(props);
 
-    this.state = new MyState();
+    const preset = Cookies.get("preset");
+
+    if (preset === undefined)
+      this.state = new MyState();
+    else
+      this.state = JSON.parse(preset);
+    
   }
 
   public render() {
@@ -94,7 +101,7 @@ class App extends React.Component {
           <div
             className={`inner ${
               this.state.result !== undefined ? "hidden" : ""
-            }`}
+              }`}
           >
             <Form size="huge" autoComplete="off">
               <Form.Field>
@@ -104,6 +111,7 @@ class App extends React.Component {
                   placeholder="Select location"
                   fluid
                   selection
+                  value={this.state.location}
                   options={this.locations}
                   onChange={this.handleDropdownChange}
                 />
@@ -115,11 +123,23 @@ class App extends React.Component {
                   placeholder="Select battery size"
                   fluid
                   selection
+                  value={this.state.batteryCapacity}
                   options={this.batteryTypes}
                   onChange={this.handleDropdownChange}
                 />
               </Form.Field>
-
+              <Form.Field>
+                <label>Charging power</label>
+                <Input
+                  label={{ basic: true, content: "kW" }}
+                  labelPosition="right"
+                  placeholder="Eg. 11" name="power"
+                  value={this.state.power}
+                  type="number" onChange={
+                    this.handleInputChange
+                  }
+                />
+              </Form.Field>
               <Form.Field>
                 <label>State of charge</label>
                 <Input
@@ -141,23 +161,12 @@ class App extends React.Component {
                     this.handleInputChange
                   }
                 />
-              </Form.Field>
-              <Form.Field>
-                <label>Charging power</label>
-                <Input
-                  label={{ basic: true, content: "kW" }}
-                  labelPosition="right"
-                  placeholder="Eg. 11" name="power"
-                  type="number" onChange={
-                    this.handleInputChange
-                  }
-                />
-              </Form.Field>
+              </Form.Field>              
               <Button
                 size="huge"
                 onClick={this.calculate}
-                active={this.canCalculate()}
                 className={this.canCalculate() ? "red" : ""}
+                disabled={!this.canCalculate()}
                 fluid
               >
                 Calculate
@@ -167,7 +176,7 @@ class App extends React.Component {
           <div
             className={`inner ${
               this.state.result === undefined ? "hidden" : ""
-            }`}
+              }`}
           >
             <Segment
               className={this.state.result === undefined ? "hidden" : ""}
@@ -189,9 +198,9 @@ class App extends React.Component {
                   <List.Item>
                     {this.state.result !== undefined
                       ? this.getDurationString(
-                          this.state.result.start,
-                          this.state.result.stop
-                        )
+                        this.state.result.start,
+                        this.state.result.stop
+                      )
                       : ""}
                   </List.Item>
                 </List.Item>
@@ -289,6 +298,13 @@ class App extends React.Component {
   };
 
   private calculate = async () => {
+
+    const preset = JSON.parse(JSON.stringify(this.state)) as MyState;
+    preset.charge = 0;
+    preset.chargeGoal = 0;
+
+    Cookies.set("preset", preset);
+
     this.setState({
       isCalculating: true
     });
@@ -299,7 +315,7 @@ class App extends React.Component {
 
     const url = `http://spotpriceapi.azurewebsites.net/operations/GetLowestCostPeriodForLoad?area=${
       this.state.location
-    }&energy=${energy}&power=${this.state.power}`;
+      }&energy=${energy}&power=${this.state.power}`;
 
     const response = await fetch(url, {
       headers: {
